@@ -1,6 +1,6 @@
 # kibana-plugin-add-comments
 
-> A plugin to add comments at a given date, in a specific elasticsearch index
+> A plugin to add comments to your Kibana dashboards
 
 ---
 
