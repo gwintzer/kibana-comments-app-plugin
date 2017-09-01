@@ -1,0 +1,129 @@
+<div class="container" ng-controller="kibanaPluginCommentForm">
+  <!--<div class="row"> remove it to keep left/right margin -->
+    <div class="col-12-sm">
+      <h1>{{ title }}</h1>
+      <p class="lead">{{ description }}</p>
+
+      <div id="messages" class="alert alert-{{messages.type}} fixed-top-right" ngClass="" data-ng-show="messages" data-ng-bind="messages.text">
+      </div>
+
+      <div ng-show="listComments.length > 0">
+        <h3>List of comments</h3>
+
+        <table datatable="ng" dt-options="showCase.dtOptions" dt-column-defs="showCase.dtColumnDefs" class="table table-condensed row-border hover">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Comment</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="comment in listComments">
+                <td class="col-md-3">{{ comment.date }}</td>
+                <td class="col-md-8">{{ comment.body }}</td>
+                <td class="col-md-1">
+                  <a ng-click="deleteComment(comment.id)" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>       
+                  </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+      </div>
+
+      <div ng-show="isLoadingComments">
+        <p class="text-center">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+          <span class="sr-only">Loading...</span>
+        </p>
+      </div>
+      
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">Add new comment</div>
+          <div class="panel-body">
+            <form name="commentForm" novalidate role="form">
+             
+                
+                <div class="container">
+                  <div class="row"> 
+                    <div class="col-md-3">
+                       <label for="date">Date</label>
+                      <span class="label label-danger" data-ng-show="submitted && commentForm.date.$error.required">Required!</span>
+                      <p class="input-group">
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                        <input type="date" class="form-control" data-ng-model="date" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" data-ng-required="true" close-text="Close" />
+                      </p>
+                       <p>
+                          <datepicker ng-model="date" ng-model-options="{ getterSetter: true }" max-date="absolute.to" show-weeks="true"></datepicker>
+                      </p>
+                    </div>
+
+                    <div class="col-md-7">
+                      <label for="body">Comment</label>
+                      <span class="label label-danger" data-ng-show="submitted && commentForm.body.$error.required">Required!</span>
+                      <textarea name="body" data-ng-model="body" class="form-control comment-body" placeholder="Please fill your comment..." required></textarea> 
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="container">
+
+                  <div class="row">
+                    <div class="col-md-4">
+                      <button  data-ng-click="submit(commentForm)" class="btn btn-default">Submit</button>
+                    </div>
+                  </div>
+
+                </div>
+
+              
+            </form>
+          </div>
+        </div>
+        <!--<form name="commentForm" novalidate role="form">
+          <h3> Add new comment </h3>
+          <div class="form-group">
+            
+            <div class="container">
+              <div class="row">
+                <div class="col-md-4">
+                   <label for="date">Date</label>
+                   <div>
+                    <datepicker ng-model="date" ng-model-options="{ getterSetter: true }" max-date="absolute.to" show-weeks="false"></datepicker>
+                  </div>
+                </div>
+
+                <div class="col-md-8">
+                  <label for="body">Comment</label>
+                  <span class="label label-danger" data-ng-show="submitted && commentForm.body.$error.required">Required!</span>
+                  <textarea name="body" data-ng-model="body" class="form-control" placeholder="Please fill your comment..." required></textarea> 
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <button  data-ng-click="submit(commentForm)" class="btn btn-default">Submit</button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+         
+
+          
+        </form>
+  -->
+
+    </div>
+  </div>
+</div>
+

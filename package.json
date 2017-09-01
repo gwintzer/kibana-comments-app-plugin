@@ -1,0 +1,39 @@
+{
+  "name": "kibana-comments-plugin",
+  "version": "0.0.1",
+  "description": "A plugin to add comments to your Kibana dashboards",
+  "main": "index.js",
+  "kibana": {
+    "version": "5.4.1",
+    "templateVersion": "7.2.0"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "start": "plugin-helpers start",
+    "test:server": "plugin-helpers test:server",
+    "test:browser": "plugin-helpers test:browser",
+    "build": "plugin-helpers build",
+    "postinstall": "plugin-helpers postinstall",
+    "gather-info": "node gather-info.js"
+  },
+  "devDependencies": {
+    "@elastic/eslint-config-kibana": "^0.6.1",
+    "@elastic/plugin-helpers": "^7.0.0",
+    "babel-eslint": "^7.2.3",
+    "eslint": "^3.19.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-mocha": "^4.9.0",
+    "eslint-plugin-react": "^7.0.1",
+    "expect.js": "^0.3.1"
+  },
+  "dependencies": {
+    "angular-datatables": "^0.5.7",
+    "boom": "^5.2.0",
+    "joi": "^10.6.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "superagent": "^3.5.2",
+    "wreck": "^12.2.2"
+  }
+}
