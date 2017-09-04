@@ -45,7 +45,7 @@ uiModules
             function ($scope, $route, $interval, $http, $log, $timeout, datepickerConfig) {
 
   $scope.title = 'Comments';
-  $scope.description = 'A plugin to add comments at a given date, in a specific elasticsearch index';
+  $scope.description = 'A plugin to add comments to your Kibana dashboards';
 
   $scope.datepickerMode = $scope.datepickerMode || datepickerConfig.datepickerMode;
 
