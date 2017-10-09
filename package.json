@@ -1,10 +1,10 @@
 {
   "name": "kibana-comments-plugin",
-  "version": "0.0.1",
+  "version": "5.6.2-2",
   "description": "A plugin to add comments to your Kibana dashboards",
   "main": "index.js",
   "kibana": {
-    "version": "5.4.1",
+    "version": "5.6.2",
     "templateVersion": "7.2.0"
   },
   "scripts": {
