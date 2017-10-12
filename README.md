@@ -1,6 +1,6 @@
-# kibana-plugin-add-comments
+# kibana-comments-app-plugin
 
-> A plugin to add comments to your Kibana dashboards
+> An application plugin to add and visualize comments to your Kibana dashboards
 
 ---
 
