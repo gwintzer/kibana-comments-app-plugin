@@ -5,7 +5,7 @@ import { initServer } from './server';
 export default function (kibana) {
   return new kibana.Plugin({
     require: ['elasticsearch'],
-    name: 'kibana-comments-plugin',
+    name: 'kibana-comments-app-plugin',
 
     init: initServer,
 
@@ -20,7 +20,7 @@ export default function (kibana) {
       app: {
         title: 'Comments',
         description: 'A plugin to add comments to your Kibana dashboards',
-        main: 'plugins/kibana-comments-plugin/app'
+        main: 'plugins/kibana-comments-app-plugin/app'
       },
       
       translations: [
@@ -29,7 +29,7 @@ export default function (kibana) {
       
 
       hacks: [
-        'plugins/kibana-comments-plugin/hack'
+        'plugins/kibana-comments-app-plugin/hack'
       ]
       
     },
