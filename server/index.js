@@ -1,5 +1,5 @@
-import esCommentRoute from './routes/esComment';
-import esIndexRoute from './routes/esIndex';
+import esCommentRoute from './routes/esComment'
+import esIndexRoute from './routes/esIndex'
 
 
 export function initServer(server, options) {

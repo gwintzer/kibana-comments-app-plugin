@@ -1,20 +1,17 @@
 
-import moment from 'moment-timezone';
-import _ from 'lodash';
+import moment from 'moment-timezone'
+import _ from 'lodash'
 
-import { uiModules } from  'ui/modules';
-import uiRoutes from 'ui/routes';
+import { uiModules } from  'ui/modules'
+import uiRoutes from 'ui/routes'
 
-import 'ui/autoload/all';
+import 'ui/autoload/all'
 
-import './less/main.less';
-import template from './templates/index.html';
-import chrome from 'ui/chrome';
+import './less/main.less'
+import template from './templates/index.html'
+import chrome from 'ui/chrome'
 
-// in dev mode, url path is prefixed by a 3-letter string to force cache reloading, 
-// else the proxy path begins directly by /app
-const apiPrefix = window.location.pathname.split('/')[1] === "app" ? 
-  "" : "/" + window.location.pathname.split('/')[1]; 
+const apiPrefix = ".."; 
 
 uiRoutes.enable();
 uiRoutes
@@ -40,8 +37,8 @@ uiModules
   minDate: null,
   maxDate: null
 })
-.controller('kibanaPluginCommentForm', 
-            ['$scope', '$route', '$interval', '$http', '$log', '$timeout', 'datepickerConfig', 
+.controller('kibanaPluginCommentForm',
+            ['$scope', '$route', '$interval', '$http', '$log', '$timeout', 'datepickerConfig',
             function ($scope, $route, $interval, $http, $log, $timeout, datepickerConfig) {
 
   $scope.title = 'Comments';
@@ -53,17 +50,15 @@ uiModules
   $scope.date.setHours(12,0,0,0);
 
   $scope.isLoadingComments = false;
-  $scope.isLoadingIndices = false;
+  $scope.isLoadingIndices  = false;
 
-  $scope.createIndex = createIndex;
+  $scope.createIndex       = createIndex;
 
   // create default index .comments, then load the list of indices
   createDefaultIndex();
 
   // load the comments
   reloadComments();
-
-
 
   function reloadIndices(indexToSelect) {
 
@@ -74,21 +69,20 @@ uiModules
 
       $http
       .get(apiPrefix + '/api/kibana-comments-plugin/index')
-      .success(function(data, status, headers, config) {
+      .then(function successCallback(res) {
 
-        var listIndices = data.map((i) => (i.index));
-        $scope.listIndices = listIndices
+        var listIndices = res.data.map((i) => (i.index));
+        $scope.listIndices = listIndices;
         $scope.isLoadingIndices = false;
 
         $scope.selectedIndex = listIndices.find((i) => (i === indexToSelect));
-      })
-      .error(function(data, status, headers, config) {
+      }, function errorCallback(err) {
 
         $scope.messages = 'There was a network error. Try again later.';
         $scope.isLoadingIndices = false;
       })
       .finally(finallyCallback);
-       
+
     }, 1000);
   };
 
@@ -98,46 +92,44 @@ uiModules
 
     $scope.isLoadingComments = true;
     $timeout(function () {
-      
+
       $http
       .get(apiPrefix + '/api/kibana-comments-plugin/comment?size=10')
-      .success(function(data, status, headers, config) {
+      .then(function successCallback(res) {
 
-        data = _.isArray(data) ? data : [];
-        $scope.listComments = data.map((oneData) => {
-          return { 
-            ...oneData, 
+        $scope.listComments = res.data.map((oneData) => {
+          return {
+            ...oneData,
             date: moment(oneData.date).format('YYYY/MM/DD')
           }
-        }) || {};
+        }) || [];
         $scope.isLoadingComments = false;
-      })
-      .error(function(data, status, headers, config) {
+      }, function errorCallback(data, status, headers, config) {
 
         $scope.messages = 'There was a network error. Try again later.';
         $scope.isLoadingComments = false;
       })
       .finally(finallyCallback);
-       
+
     }, 1000);
   };
 
-  
+
   $scope.deleteComment = function(commentIndex, commentId) {
 
     // Perform JSONP request.
     var $promise = $http({
         method: 'DELETE',
-        url: apiPrefix + '/api/kibana-comments-plugin/comment/' + commentIndex + '/' + commentId, 
+        url: apiPrefix + '/api/kibana-comments-plugin/comment/' + commentIndex + '/' + commentId,
         headers: {
           'Content-Type': 'application/json'
         }
     })
-    .success(function(res, status, headers, config) {
+    .then(function successCallback(res) {
 
-      if (res.deleted) {
+      if (res.data.result === "deleted") {
         $scope.messages = {
-          text: 'Your comment has been deleted!', 
+          text: 'Your comment has been deleted!',
           type: 'success'
         };
 
@@ -146,18 +138,17 @@ uiModules
 
       } else {
         $scope.messages = {
-          text: 'Oops, we received your request, but there was an error processing it.', 
+          text: 'Oops, we received your request, but there was an error processing it.',
           type: 'danger'
         };
         $log.error(res);
       }
 
 
-    })
-    .error(function(res, status, headers, config) {
+    }, function errorCallback(res, status, headers, config) {
 
       $scope.messages = {
-        text: 'There was a network error. Try again later.', 
+        text: 'There was a network error. Try again later.',
         type: 'danger'
       };
 
@@ -193,22 +184,22 @@ uiModules
     // Perform JSONP request.
     var $promise = $http({
         method: 'PUT',
-        url: apiPrefix + '/api/kibana-comments-plugin/comment', 
+        url: apiPrefix + '/api/kibana-comments-plugin/comment',
         headers: {
           'Content-Type': 'application/json'
         },
         data
     })
-    .success(function(res, status, headers, config) {
+    .then(function successCallback(res) {
 
-      if (res.created) {
+      if (res.data.result === "created") {
 
         // reset submitted
         $scope.submitted = false;
 
         $scope.body = " ";
         $scope.messages = {
-          text: 'Your comment has been saved!', 
+          text: 'Your comment has been saved!',
           type: 'success'
         };
 
@@ -217,13 +208,12 @@ uiModules
 
       } else {
         $scope.messages = {
-          text: 'Oops, we received your request, but there was an error processing it.', 
+          text: 'Oops, we received your request, but there was an error processing it.',
           type: 'danger'
         };
         $log.error(res);
       }
-    })
-    .error(errorCallback)
+    }, errorCallback)
     .finally(finallyCallback);
 
   };
@@ -233,7 +223,7 @@ uiModules
     // Perform JSONP request.
     var $promise = $http({
         method: 'PUT',
-        url: apiPrefix + '/api/kibana-comments-plugin/index', 
+        url: apiPrefix + '/api/kibana-comments-plugin/index',
         headers: {
           'Content-Type': 'application/json'
         }
@@ -242,7 +232,7 @@ uiModules
 
         // Reload indices list
         reloadIndices();
-      
+
     })
 
   }
@@ -251,7 +241,7 @@ uiModules
 
     if (!newIndex) {
       $scope.messages = {
-        text: 'Index cannot be empty', 
+        text: 'Index cannot be empty',
         type: 'danger'
       };
       finallyCallback(callback);
@@ -262,19 +252,19 @@ uiModules
     // Perform JSONP request.
     var $promise = $http({
         method: 'PUT',
-        url: apiPrefix + '/api/kibana-comments-plugin/index/' + newIndex, 
+        url: apiPrefix + '/api/kibana-comments-plugin/index/' + newIndex,
         headers: {
           'Content-Type': 'application/json'
         }
     })
-    .success(function(res, status, headers, config) {
+    .then(function successCallback(res) {
 
-      if (res.acknowledged) {
+      if (res.data.acknowledged) {
 
         var indexToSelect = $scope.newIndex;
         $scope.newIndex = null;
         $scope.messages = {
-          text: 'Your index has been created!', 
+          text: 'Your index has been created!',
           type: 'success'
         };
 
@@ -283,22 +273,21 @@ uiModules
 
       } else {
 
-        if (res.error.type === "index_already_exists_exception") {
+        if (res.data.error.type === "index_already_exists_exception") {
           $scope.messages = {
-            text: 'This index already exists. Please reload the page to see it in the indices list', 
+            text: 'This index already exists. Please reload the page to see it in the indices list',
             type: 'warning'
           };
         }
         else {
           $scope.messages = {
-            text: 'Oops, we received your request, but there was an error processing it. <br>Reason: ' + res.error.reason, 
+            text: 'Oops, we received your request, but there was an error processing it. <br>Reason: ' + res.data.error.reason,
             type: 'danger'
           };
         }
         $log.error(res);
       }
-    })
-    .error(errorCallback)
+    }, errorCallback)
     .finally(finallyCallback);
   }
 
@@ -307,7 +296,7 @@ uiModules
   function errorCallback(res, status, headers, config) {
 
     $scope.messages = {
-      text: 'There was a network error. Try again later.', 
+      text: 'There was a network error. Try again later.',
       type: 'danger'
     };
 

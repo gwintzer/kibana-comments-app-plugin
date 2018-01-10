@@ -1,92 +1,51 @@
-import request from 'superagent'
-import url from 'url'
-import http from 'http'
-import https from 'https'
-import querystring from 'querystring'
 
-import { getElasticsearchProxyConfig } from '../elasticsearch_proxy_config'
-
-
-
-export default function (server, config) {
+export default function (server, dataCluster) {
 
   // TODO : check given fields
   //const mandatoryFields = ["date", "comment"];
 
-  const defaultIndex = "comments,comments-*";
+  const indexPattern = "comments,comments-*";
+  const type = "document";
 
-  const esBaseUrl = url.parse(config.get('elasticsearch.url'));
-  const esProxyConfig = getElasticsearchProxyConfig(server);
-  
-  
   // Route GET : list comments
   server.route({
     path: '/api/kibana-comments-plugin/comment',
     method: 'GET',
-    config: {
-      cors: {}
-    },
     handler(req, reply) {
 
-      var body = {
-        "query": {
-          "match_all": {}
-        },
-        "_source": ["date", "body"],
-        "size": req.query.size || 10,
-        "sort": [
-          {
-            "created_at": {
-              "order": "desc"
+      var index = req.query.index ? encodeURIcomponent(req.query.index) : indexPattern;
+
+      dataCluster.callWithRequest(req, 'search', {
+        index,
+        type,
+        body: {
+          "query": {
+            "match_all": {}
+          },
+          "_source": ["date", "body"],
+          "size": req.query.size || 10/*,
+          "sort": [
+            {
+              "created_at": {
+                "order": "desc"
+              }
             }
-          }
-        ]
+          ]*/
 
-      };
-      var reqBody = JSON.stringify(body);
-
-      var options = {
-        ...esBaseUrl,
-        ...esProxyConfig,
-        method: 'POST',
-        path: '/' + (req.query.index ? encodeURIcomponent(req.query.index) : defaultIndex) + "/_search",
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(reqBody)
         }
-      }
+      }).then(function (response) {
 
-      const ESReq = http.request(options, (res) => {
+        reply(response.hits.hits.map((hit) => ({
+          "id": hit._id,
+          "index": hit._index,
+          ...hit._source
+        })));
 
-          var resultData = "";
+  		}).catch(function (e) {
 
-          res.on('data', (chunk) => {
-            resultData += chunk;
-          });
+          reply({"error": e})
+      })
 
-          res.on('end', () => {
-
-            try {
-              resultData = JSON.parse(resultData).hits.hits.map((hit) => ({
-                "id": hit._id, 
-                "index": hit._index, 
-                ...hit._source
-              }));
-            }
-            catch (e) {
-              resultData = {};
-            }
-            reply(resultData);
-          });
-
-          res.on('error', (e) => {
-            reply({"error": e})
-          });
-
-        });
-
-      // finalize the request 
-      ESReq.end(reqBody);
     }
   });
 
@@ -95,9 +54,6 @@ export default function (server, config) {
   server.route({
     path: '/api/kibana-comments-plugin/comment',
     method: 'PUT',
-    config: {
-      cors: {}
-    },
     handler(req, reply) {
 
       var payload = req.payload;
@@ -105,46 +61,24 @@ export default function (server, config) {
       if (!payload.index)
         reply({"error": e})
 
+      var index = payload.index;
 
-      var reqBody = JSON.stringify({
-        "created_at": new Date().toISOString(), 
-        ...payload.comment
-      });
-
-      var options = {
-        ...esBaseUrl,
-        ...esProxyConfig,
-        method: 'POST',
-        path: '/' + payload.index + "/document",
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(reqBody)
+      dataCluster.callWithRequest(req, 'index', {
+        index,
+        type,
+        body: {
+          "created_at": new Date().toISOString(),
+          ...payload.comment
         }
-      }
+      }).then((response) => {
 
-      const ESReq = http.request(options, (res) => {
+        reply(response);
 
-          var resultData = "";
+      }).catch((e) => {
 
-          res.on('data', (chunk) => {
-            resultData += chunk;
-          });
-          res.on('end', () => {
-            reply(JSON.parse(resultData));
-          });
-
-          res.on('error', (e) => {
-            console.error(e);
-            reply({"error": e})
-          });
-
-        });
-
-        // pass the body of the POST request 
-        ESReq.write(reqBody);
-        
-        // finalize the request
-        ESReq.end();
+        console.error(e);
+        reply({"error": e})
+      });
 
     }
   });
@@ -155,43 +89,18 @@ export default function (server, config) {
     method: 'DELETE',
     handler(req, reply) {
 
-      var index = req.params.index;
-      var id = req.params.id;
-      
-      var options = {
-        ...esBaseUrl,
-        ...esProxyConfig,
-        method: 'DELETE',
-        path: '/' + index + "/document/" + id,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-
-      // build request
-      const ESReq = http.request(options, (res) => {
-
-          var resultData = "";
-
-          res.on('data', (chunk) => {
-            resultData += chunk;
-          });
-          res.on('end', (a) => {
-            reply({"status": JSON.parse(resultData), deleted: true});
-          });
-
-          res.on('error', (e) => {
-            console.log ("delete : on end", e)
-            reply({"error": e})
-          });
-
-        });
-        
-        // finalize the request
-        ESReq.end();
-
+      dataCluster.callWithRequest(req, 'delete', {
+        index: req.params.index,
+        type: type,
+        id: req.params.id
+      }).then((response) => {
+        reply(response)
+      }, (e) => {
+        reply({"error": e})
+      })
 
     }
+
   });
 
 }
