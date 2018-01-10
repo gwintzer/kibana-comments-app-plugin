@@ -1,6 +1,6 @@
 {
   "name": "kibana-comments-app-plugin",
-  "version": "5.6.5",
+  "version": "5.6.5-1",
   "description": "An application plugin to add and manage comments to your Kibana dashboards",
   "main": "index.js",
   "kibana": {
