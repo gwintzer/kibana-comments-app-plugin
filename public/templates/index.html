@@ -7,19 +7,19 @@
 
       <div id="messages" class="alert alert-{{messages.type}} fixed-top-right" ngClass="" data-ng-show="messages" data-ng-bind-html="messages.text">
       </div>
-      
+
       <div class="panel-group">
         <div class="panel panel-default">
           <div class="panel-heading">Add new comment</div>
           <div class="panel-body">
             <form name="commentForm" novalidate role="form">
-             
-              <div class="row"> 
+
+              <div class="row">
                 <div class="col-sm-5">
                   <label for="selectedIndex">choose an existing index</label>
                   <span class="label label-danger" data-ng-show="submitted && commentForm.selectedIndex.$error.required">Required!</span>
-                  <select name="selectedIndex" class="form-control" 
-                    data-ng-model="selectedIndex" 
+                  <select name="selectedIndex" class="form-control btn-primary"
+                    data-ng-model="selectedIndex"
                     data-ng-options="index for index in listIndices"
                     data-ng-required="true">
                   </select>
@@ -34,29 +34,30 @@
                 </div>
               </div>
               <hr/>
-              <div class="row"> 
-                <div class="col-md-4 col-lg-3">
+              <div class="row">
+                <div class="col-md-5 col-lg-4">
                   <label for="date">Date</label>
                   <span class="label label-danger" data-ng-show="submitted && commentForm.date.$error.required">Required!</span>
                   <p class="input-group">
                     <span class="input-group-addon">
                       <i class="glyphicon glyphicon-calendar"></i>
                     </span>
-                    <input type="date" name="date" class="form-control" data-ng-model="date" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" data-ng-required="true" close-text="Close" />
+                    <input type="datetime-local" name="date" class="form-control btn-primary" data-ng-model="date" is-open="status.opened"
+                           datepicker-options="dateOptions" date-disabled="disabled(date, mode)" data-ng-required="true" close-text="Close" />
                   </p>
                    <p>
                       <datepicker ng-model="date" ng-model-options="{ getterSetter: true }" max-date="absolute.to" show-weeks="true"></datepicker>
                   </p>
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-md-7">
                   <label for="body">Comment</label>
                   <span class="label label-danger" data-ng-show="(commentForm.body.$dirty || submitted) && commentForm.body.$error.required">Required!</span>
-                  <textarea name="body" data-ng-model="body" class="form-control comment-body" data-ng-required="true" placeholder="Please fill your comment..."></textarea> 
+                  <textarea name="body" data-ng-model="body" class="form-control comment-body" data-ng-required="true" placeholder="Please fill your comment..."></textarea>
                 </div>
 
               </div>
-               
+
 
               <div class="container">
 
@@ -67,7 +68,7 @@
                 </div>
 
               </div>
-   
+
             </form>
           </div>
         </div>
@@ -86,14 +87,14 @@
             </tr>
             </thead>
             <tbody>
- 
+
             <tr ng-repeat="comment in listComments">
                 <td class="col-md-3">{{ comment.date }}</td>
                 <td class="col-md-6">{{ comment.body }}</td>
                 <td class="col-md-6">{{ comment.index }}</td>
                 <td class="col-md-1">
                   <button ng-click="deleteComment(comment.index, comment.id)" class="btn btn-danger">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>       
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                   </button>
                 </td>
             </tr>
@@ -107,9 +108,7 @@
           <span class="sr-only">Loading...</span>
         </p>
       </div>
-      
+
     </div>
   </div>
 </div>
-
-
