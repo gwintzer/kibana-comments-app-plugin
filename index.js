@@ -17,12 +17,7 @@ export default function (kibana) {
         title: 'Comments',
         description: 'A plugin to add comments to your Kibana dashboards',
         main: 'plugins/kibana-comments-app-plugin/app'
-      },
-
-      translations: [
-        resolve(__dirname, './translations/es.json')
-      ]
-
+      }
 
     },
 
