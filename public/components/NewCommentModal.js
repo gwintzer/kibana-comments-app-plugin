@@ -75,24 +75,51 @@ export default class NewCommentModal extends Component {
     this.submit              = this.submit.bind(this);
   }
 
-  handleIndexChange   = selectedIndex => { this.setState({ selectedIndex }); }
-  handleDateChange    = startDate     => { this.setState({ startDate }); }
-  handleCommentChange = e             => { this.setState({ commentValue: e.target.value }); }
+  handleIndexChange = selectedIndex => {
+    this.setState({ selectedIndex });
+  }
+
+  handleDateChange = startDate => {
+
+    const { errors } = this.state;
+
+    this.setState({
+      startDate,
+      errors: {...errors, startDate:[]}
+    });
+  }
+
+  handleCommentChange = e => {
+
+    const { errors } = this.state;
+
+    this.setState({
+      commentValue: e.target.value,
+      errors: {...errors, commentValue:[]}
+    });
+  }
 
   submit() {
 
     // validate data
     let errors = {};
 
-    if (this.state.startDate)
+    if (!this.state.startDate)
       errors['startDate'] = ['The date is required'];
     else if (!moment(this.state.startDate).isValid())
       errors['startDate'] = ['The date format is invalid'];
 
-    if (this.state.commentValue)
+    if (!this.state.commentValue)
       errors['commentValue'] = ['The comment body must be filled'];
 
-    if (errors) {
+    if (Object.keys(errors).length) {
+
+      // fill other props to explicit empty value
+      errors = {
+        startDate: [],
+        commentValue: [],
+        ...errors
+      }
 
       this.setState({errors});
       return;
@@ -140,36 +167,42 @@ export default class NewCommentModal extends Component {
 
           <EuiSpacer />
 
-          <EuiFlexGroup style={{ maxWidth: 800 }}>
+          <EuiFlexGroup>
             <EuiFlexItem>
               <EuiFormRow
                 label="date"
-                isInvalid={this.state.errors.startDate.length}
+                isInvalid={!!this.state.errors.startDate.length}
                 error={this.state.errors.startDate}
+                fullWidth
               >
                 <EuiDatePicker
                   showTimeSelect
-                  isInvalid={this.state.errors.startDate.length}
+                  isInvalid={!!this.state.errors.startDate.length}
                   selected={this.state.startDate}
                   onChange={this.handleDateChange}
                   dateFormat='DD/MM/YYYY HH:mm'
                   placeholder="select a relevant date for your comment"
+                  fullWidth
                 />
               </EuiFormRow>
+              {/*
               <EuiFormLabel>set to now</EuiFormLabel>
+              */}
             </EuiFlexItem>
           </EuiFlexGroup>
-          <EuiFlexGroup style={{ maxWidth: 800 }}>
+          <EuiFlexGroup>
             <EuiFlexItem>
               <EuiFormRow
-                label="comment"
-                isInvalid={this.state.errors.commentValue.length}
+                label="body"
+                isInvalid={!!this.state.errors.commentValue.length}
                 error={this.state.errors.commentValue}
+                fullWidth
                 >
                 <EuiTextArea
-                  isInvalid={this.state.errors.commentValue}
+                  isInvalid={!!this.state.errors.commentValue.length}
                   onChange={this.handleCommentChange}
                   placeholder="write your comment here"
+                  fullWidth
                 />
               </EuiFormRow>
             </EuiFlexItem>

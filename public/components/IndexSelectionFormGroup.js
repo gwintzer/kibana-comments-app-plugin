@@ -5,38 +5,39 @@ import React, {
 import ReactDOM from 'react-dom';
 
 import {
+  EuiAccordion,
+  EuiButton,
+  EuiButtonEmpty,
+  EuiCode,
+  EuiDatePicker,
+  EuiFieldText,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiForm,
+  EuiFormControlLayout,
+  EuiFormLabel,
+  EuiFormRow,
+  EuiHeader,
+  EuiHeaderBreadcrumb,
+  EuiHeaderBreadcrumbs,
+  EuiHeaderLogo,
+  EuiHeaderSection,
+  EuiHeaderSectionItem,
+  EuiHeaderSectionItemButton,
+  EuiIcon,
+  EuiImage,
   EuiPage,
-  EuiPageHeader,
   EuiPageBody,
   EuiPageContent,
   EuiPageContentHeader,
   EuiPageContentBody,
-  EuiHeader,
-  EuiHeaderSection,
-  EuiHeaderSectionItem,
-  EuiHeaderBreadcrumbs,
-  EuiHeaderBreadcrumb,
-  EuiHeaderSectionItemButton,
-  EuiHeaderLogo,
-  EuiSpacer,
-  EuiTextArea,
+  EuiPageHeader,
   EuiPanel,
-  EuiCode,
-  EuiDatePicker,
-  EuiForm,
-  EuiFormRow,
-  EuiFormControlLayout,
-  EuiFormLabel,
-  EuiFieldText,
   EuiSelect,
-  EuiButton,
-  EuiImage,
-  EuiIcon,
-  EuiTitle,
+  EuiSpacer,
   EuiText,
-  EuiFlexGroup,
-  EuiFlexItem,
-
+  EuiTextArea,
+  EuiTitle,
 } from '@elastic/eui';
 
 import {
@@ -81,7 +82,6 @@ export default class IndexSelectionFormGroup extends Component {
     this.selectIndex               = this.selectIndex.bind(this, onChange);
   }
 
-
   handleIndexChange = e => {
 
     this.selectIndex(e.target.value);
@@ -110,8 +110,11 @@ export default class IndexSelectionFormGroup extends Component {
 
         this.refreshIndices(this.state.newIndexValue);
         this.setState({
-          newIndexValue: ""
+          newIndexValue: '',
         });
+
+        this.accordionChild.onToggle();
+
       })
       .catch((err) => {console.log(err)})
 
@@ -160,7 +163,7 @@ export default class IndexSelectionFormGroup extends Component {
         <Fragment>
           <EuiFlexGroup style={{ maxWidth: 800 }}>
             <EuiFlexItem grow={false} style={{ width: 250 }}>
-              <EuiFormRow label="choose an existing index">
+              <EuiFormRow label="choose an index to store your comment">
                 <EuiSelect
                   options={this.state.options}
                   value={this.state.selectedIndex}
@@ -168,20 +171,33 @@ export default class IndexSelectionFormGroup extends Component {
                 />
               </EuiFormRow>
             </EuiFlexItem>
-            <EuiFlexItem>
-              <EuiFormRow label="create a new index">
-                <EuiFieldText
-                  id="createCommentIndexInput"
-                  value={this.state.newIndexValue}
-                  onChange={this.handleNewIndexValueChange}/>
-              </EuiFormRow>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiFormRow hasEmptyLabelSpace>
-                <EuiButton onClick={this.handleNewIndexCreate}>Create</EuiButton>
-              </EuiFormRow>
-            </EuiFlexItem>
           </EuiFlexGroup>
+          <EuiAccordion
+          ref={ instance => {this.accordionChild = instance} }
+          id="accordionNewIndex"
+          buttonContent={<EuiText size="xs">You need a dedicated index for your comments ? Create a new one...</EuiText>}
+          paddingSize="m"
+          >
+            <EuiFlexGroup style={{ maxWidth: 800 }}>
+              <EuiFlexItem>
+                <EuiFormRow label="new index name">
+                  <EuiFormControlLayout
+                  prepend={<EuiFormLabel htmlFor="createCommentIndexInput">{this.indexPrefix}</EuiFormLabel>}
+                  append={<EuiButtonEmpty onClick={this.handleNewIndexCreate}>Create</EuiButtonEmpty>}
+                  >
+                    <input type="text"
+                           className="euiFieldText euiFieldText--inGroup"
+                           id="createCommentIndexInput"
+                           value={this.state.newIndexValue}
+                           onChange={this.handleNewIndexValueChange} />
+                  </EuiFormControlLayout>
+                </EuiFormRow>
+
+              </EuiFlexItem>
+
+            </EuiFlexGroup>
+
+          </EuiAccordion>
         </Fragment>
       );
 

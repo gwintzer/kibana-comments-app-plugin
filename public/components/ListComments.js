@@ -96,9 +96,7 @@ export default class ListComments extends Component {
       pageSize,
       sortField,
       sortDirection,
-    });
-
-    this.loadComments();
+    }, this.loadComments);
 
   };
 
@@ -113,9 +111,8 @@ export default class ListComments extends Component {
 
         this.setState({
           selectedItems: []
-        });
+        }, this.loadComments);
 
-        this.loadComments()
       });
 
   };
@@ -225,7 +222,7 @@ export default class ListComments extends Component {
       render: (date) => moment(date).format('DD/MM/YYYY HH:mm'),
     }, {
       field: 'body',
-      name: 'Comment',
+      name: 'Body',
       sortable: true,
       truncateText: false,
       hideForMobile: false,
@@ -262,9 +259,13 @@ export default class ListComments extends Component {
     return (
       <Fragment>
         <EuiSpacer/>
-        {addButton}
+        <EuiFlexGroup>
+          <EuiFlexItem grow={false}>{addButton}</EuiFlexItem>
+          <EuiFlexItem grow={false}>{deleteButton}</EuiFlexItem>
+        </EuiFlexGroup>
+
         <EuiSpacer/>
-        {deleteButton}
+
         <EuiBasicTable
           items={pageOfItems}
           itemId="id"

@@ -54,7 +54,7 @@ const Main = (props) => {
           <EuiHeader style={{width: "100%"}}>
             <EuiHeaderSection>
               <EuiHeaderSectionItem border="right" style={{width: "5%"}}>
-                <EuiFlexGroup justifyContent="center" style={{paddingTop: "15px"}}>
+                <EuiFlexGroup justifyContent="center" style={{paddingTop: "30px"}}>
                   <EuiFlexItem grow={false}>
                     <EuiIcon type="pencil" size="xxl" color="#e5740b"/>
                   </EuiFlexItem>
