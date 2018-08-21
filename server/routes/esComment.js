@@ -13,7 +13,23 @@ export default function (server, dataCluster) {
     method: 'GET',
     handler(req, reply) {
 
-      var index = req.query.index ? encodeURIcomponent(req.query.index) : indexPattern;
+      const index         = req.query.index ? encodeURIcomponent(req.query.index) : indexPattern,
+            pageIndex     = req.query.pageIndex || 0,
+            pageSize      = req.query.pageSize || 20,
+            sortField     = req.query.sortField || 'date',
+            sortDirection = req.query.sortDirection || 'desc'
+
+      const getSortableField = () => {
+
+        if (sortField === "body") {
+          return "body.keyword";
+        }
+        if (sortField === "index") {
+          return "_index";
+        }
+
+        return sortField;
+      }
 
       dataCluster.callWithRequest(req, 'search', {
         index,
@@ -23,23 +39,27 @@ export default function (server, dataCluster) {
             "match_all": {}
           },
           "_source": ["date", "body"],
-          "size": req.query.size || 10/*,
+          "from": pageIndex * pageSize,
+          "size": pageSize,
           "sort": [
             {
-              "created_at": {
-                "order": "desc"
+              [getSortableField()]: {
+                "order": sortDirection
               }
             }
-          ]*/
+          ]
 
         }
       }).then(function (response) {
 
-        reply(response.hits.hits.map((hit) => ({
-          "id": hit._id,
-          "index": hit._index,
-          ...hit._source
-        })));
+        reply({
+          "total": response.hits.total,
+          "items": response.hits.hits.map((hit) => ({
+            "id": hit._id,
+            "index": hit._index,
+            ...hit._source
+          }))
+        });
 
   		}).catch(function (e) {
 
@@ -66,6 +86,7 @@ export default function (server, dataCluster) {
       dataCluster.callWithRequest(req, 'index', {
         index,
         type,
+        refresh: true,
         body: {
           "created_at": new Date().toISOString(),
           ...payload.comment
@@ -92,6 +113,7 @@ export default function (server, dataCluster) {
       dataCluster.callWithRequest(req, 'delete', {
         index: req.params.index,
         type: type,
+        refresh: true,
         id: req.params.id
       }).then((response) => {
         reply(response)
