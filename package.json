@@ -33,6 +33,7 @@
   "dependencies": {
     "@elastic/eui": "3.6.1",
     "angular-datatables": "^0.5.7",
+    "axios": "^0.18.0",
     "boom": "^5.2.0",
     "joi": "^10.6.0",
     "lodash": "^4.17.4",

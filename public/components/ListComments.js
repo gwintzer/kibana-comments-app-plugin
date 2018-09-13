@@ -5,31 +5,17 @@ import React, {
 import moment from 'moment';
 
 import {
-  EuiPage,
-  EuiPageHeader,
-  EuiPageBody,
-  EuiPageContent,
-  EuiPageContentHeader,
-  EuiPageContentBody,
-  EuiHeader,
-  EuiHeaderSection,
-  EuiHeaderSectionItem,
-  EuiHeaderBreadcrumbs,
-  EuiHeaderBreadcrumb,
-  EuiHeaderSectionItemButton,
-  EuiHeaderLogo,
-  EuiImage,
-  EuiOverlayMask,
-  EuiIcon,
-  EuiTitle,
-  EuiText,
-  EuiFlexGroup,
-  EuiFlexItem,
   EuiBasicTable,
-  EuiLink,
-  EuiHealth,
   EuiButton,
+  EuiFlexItem,
+  EuiFlexGroup,
+  EuiGlobalToastList,
+  EuiIcon,
+  EuiOverlayMask,
+  EuiPortal,
   EuiSpacer,
+  EuiText,
+  EuiTextAlign,
 } from '@elastic/eui';
 
 import NewCommentModal from '../components/NewCommentModal'
@@ -42,7 +28,10 @@ import {
 export default class ListComments extends Component {
 
   constructor(props) {
+
     super(props);
+
+    this.toastId = 0;
 
     const defaultState = this.state = {
       pageOfItems: null,
@@ -53,6 +42,7 @@ export default class ListComments extends Component {
       sortDirection: 'desc',
       selectedItems: [],
       isModalVisible: false,
+      toasts: [],
     };
 
     this.loadComments();
@@ -109,25 +99,68 @@ export default class ListComments extends Component {
     deleteComments(selectedItems.map((item) => ({index: item.index, id: item.id})))
       .then(() => {
 
+        this.addToast({
+          title: "Comment deleted",
+          type: "success"
+        });
+
         this.setState({
           selectedItems: []
         }, this.loadComments);
 
-      });
+      })
+      .catch((err) => {console.log(err)});
 
   };
 
-  renderAddButton() {
+  addToast = ({title, msg, type}) => {
 
-    let modal;
+    let text = msg || null;
+    let iconType = null;
 
-    if (this.state.isModalVisible) {
-      modal = (
-        <EuiOverlayMask>
-          <NewCommentModal onClose={this.closeModalAndReloadComments} />
-        </EuiOverlayMask>
-      );
+    switch(type) {
+      case 'success':
+        iconType = 'check';
+        break;
+
+      case 'danger':
+        iconType = 'alert';
+        break;
+
+      case 'warning':
+        iconType = 'help';
+        break;
+
+      default:
+        break;
     }
+
+   const toast = {
+     id: this.toastId++,
+     title: title,
+     color: type || "primary",
+     iconType,
+     text,
+   }
+
+   this.setState({
+     toasts: this.state.toasts.concat(toast)
+   });
+ };
+
+ removeToast = (removedToast) => {
+   this.setState(prevState => ({
+     toasts: prevState.toasts.filter(toast => toast.id !== removedToast.id),
+   }));
+ };
+
+ removeAllToasts = () => {
+   this.setState({
+     toasts: [],
+   });
+ };
+
+  renderAddButton() {
 
     return (
       <Fragment>
@@ -140,7 +173,6 @@ export default class ListComments extends Component {
           Add a new comment
         </EuiButton>
 
-        {modal}
       </Fragment>
     );
   }
@@ -175,14 +207,9 @@ export default class ListComments extends Component {
     findComments({pageIndex, pageSize, sortField, sortDirection})
       .then((res) => {
 
-        const {
-          pageOfItems,
-          totalItemCount,
-        } = res.data;
-
         this.setState({
-          pageOfItems,
-          totalItemCount,
+          pageOfItems: res.data.pageOfItems || null,
+          totalItemCount: res.data.totalItemCount || null,
         });
 
       })
@@ -209,8 +236,8 @@ export default class ListComments extends Component {
     } = this.state;
 
 
-    if (!pageOfItems)
-      return null;
+    // if (!pageOfItems)
+    //   return null;
 
     const columns = [{
       field: 'date',
@@ -256,16 +283,27 @@ export default class ListComments extends Component {
     const addButton    = this.renderAddButton();
     const deleteButton = this.renderDeleteButton();
 
-    return (
-      <Fragment>
-        <EuiSpacer/>
-        <EuiFlexGroup>
-          <EuiFlexItem grow={false}>{addButton}</EuiFlexItem>
-          <EuiFlexItem grow={false}>{deleteButton}</EuiFlexItem>
-        </EuiFlexGroup>
+    let extraElements;
+    let toastList = (
+      <EuiGlobalToastList
+        toasts={this.state.toasts}
+        dismissToast={this.removeToast}
+        toastLifeTimeMs={8000}
+      />
+    );
 
-        <EuiSpacer/>
+    let modal;
+    if (this.state.isModalVisible) {
+      modal = (
+        <EuiOverlayMask>
+          <NewCommentModal onClose={this.closeModalAndReloadComments} addToast={this.addToast} />
+        </EuiOverlayMask>
+      );
+    }
 
+    let table;
+    if (pageOfItems) {
+      table = (
         <EuiBasicTable
           items={pageOfItems}
           itemId="id"
@@ -276,6 +314,41 @@ export default class ListComments extends Component {
           selection={selection}
           onChange={this.onTableChange}
         />
+      );
+    }
+    else {
+      table = (
+        <EuiText>
+          <EuiTextAlign textAlign="center">
+            <p>Any comments found</p>
+          </EuiTextAlign>
+        </EuiText>
+      );
+    }
+
+
+    return (
+      <Fragment>
+        <EuiSpacer/>
+        <EuiFlexGroup>
+          <EuiFlexItem grow={false}>{addButton}</EuiFlexItem>
+          <EuiFlexItem grow={false}>{deleteButton}</EuiFlexItem>
+        </EuiFlexGroup>
+
+        <EuiSpacer/>
+
+        {table}
+
+        {modal}
+
+        <EuiPortal>
+          <EuiGlobalToastList
+            toasts={this.state.toasts}
+            dismissToast={this.removeToast}
+            toastLifeTimeMs={8000}
+          />
+        </EuiPortal>
+
       </Fragment>
     );
 

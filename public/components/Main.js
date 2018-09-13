@@ -5,31 +5,20 @@ import React, {
 import '@elastic/eui/dist/eui_theme_light.css';
 
 import {
-  EuiPage,
-  EuiPageHeader,
-  EuiPageBody,
-  EuiPageContent,
-  EuiPageContentHeader,
-  EuiPageContentHeaderSection,
-  EuiPageContentBody,
-  EuiSpacer,
-  EuiPanel,
+  EuiFlexItem,
+  EuiFlexGroup,
   EuiHeader,
   EuiHeaderSection,
   EuiHeaderSectionItem,
-  EuiHeaderBreadcrumbs,
-  EuiHeaderBreadcrumb,
-  EuiHeaderSectionItemButton,
-  EuiHeaderLogo,
-  EuiImage,
   EuiIcon,
-  EuiTitle,
+  EuiPage,
+  EuiPageBody,
+  EuiPageContent,
+  EuiPageContentBody,
+  EuiPageHeader,
+  EuiSpacer,
   EuiText,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiLoadingSpinner,
-  EuiGlobalToastList,
-
+  EuiTitle,
 } from '@elastic/eui';
 
 
@@ -38,11 +27,6 @@ import ListComments from '../components/ListComments'
 
 const Main = (props) => {
 
-  // var removeToast = (removedToast) => {
-  //   this.setState(prevState => ({
-  //     toasts: prevState.toasts.filter(toast => toast.id !== removedToast.id),
-  //   }));
-  // };
 
 
   return(
@@ -78,21 +62,7 @@ const Main = (props) => {
           </EuiHeader>
         </EuiPageHeader>
 
-{/*
-        <EuiPageContent>
-          <EuiPageContentHeader>
-            <EuiTitle>
-              <h2>Add new comment</h2>
-            </EuiTitle>
-          </EuiPageContentHeader>
-
-          <EuiPageContentBody>
-            <NewComment />
-          </EuiPageContentBody>
-        </EuiPageContent>
-*/}
         <EuiSpacer />
-
 
         <EuiPageContent>
 
@@ -104,26 +74,6 @@ const Main = (props) => {
       </EuiPageBody>
 
       <EuiSpacer />
-
-{/*
-      <EuiPageBody>
-        <EuiPageContent verticalPosition="center" horizontalPosition="center">
-          <EuiPageContentHeader>
-            <EuiPageContentHeaderSection>
-              <EuiLoadingSpinner size="xl"/>
-            </EuiPageContentHeaderSection>
-          </EuiPageContentHeader>
-          <EuiPageContentBody>
-            Loading...
-          </EuiPageContentBody>
-        </EuiPageContent>
-      </EuiPageBody>
-*/}
-    {/*<EuiGlobalToastList
-      toasts={props.messages}
-      toastLifeTimeMs={6000}
-      dismissToast={removeToast}
-    />*/}
 
    </EuiPage>
    </Fragment>
