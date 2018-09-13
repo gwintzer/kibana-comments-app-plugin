@@ -8,6 +8,7 @@ import {
   EuiButton,
   EuiButtonEmpty,
   EuiCode,
+  EuiCodeBlock,
   EuiDatePicker,
   EuiFieldText,
   EuiFlexGroup,
@@ -68,6 +69,7 @@ export default class NewCommentModal extends Component {
     };
 
     this.closeModal = props.onClose;
+    this.addToast = props.addToast;
 
     this.handleIndexChange   = this.handleIndexChange.bind(this);
     this.handleDateChange    = this.handleDateChange.bind(this);
@@ -132,10 +134,19 @@ export default class NewCommentModal extends Component {
 
         if (!res.status) {
           // error loading indices
-          //TODO
+          this.addToast({
+            title: "Error to create new comment",
+            type: "danger",
+            msg: (<EuiCodeBlock language="json">{JSON.stringify(res.response.data)}</EuiCodeBlock>)
+          });
 
           return;
         }
+
+        this.addToast({
+          title: "New comment created",
+          type: "success"
+        });
 
         // reset state
         this.setState({
@@ -163,7 +174,7 @@ export default class NewCommentModal extends Component {
         </EuiModalHeader>
 
         <EuiModalBody>
-          <IndexSelectionFormGroup onChange={this.handleIndexChange} />
+          <IndexSelectionFormGroup onChange={this.handleIndexChange} addToast={this.addToast} />
 
           <EuiSpacer />
 

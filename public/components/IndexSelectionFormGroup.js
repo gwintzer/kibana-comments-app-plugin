@@ -9,6 +9,7 @@ import {
   EuiButton,
   EuiButtonEmpty,
   EuiCode,
+  EuiCodeBlock,
   EuiDatePicker,
   EuiFieldText,
   EuiFlexGroup,
@@ -63,8 +64,10 @@ export default class IndexSelectionFormGroup extends Component {
     this.state = {
       options: [],
       selectedIndex: '',
-      newIndexValue: ''
+      newIndexValue: '',
     };
+
+    this.addToast = props.addToast;
 
     // init the default index
     createDefaultIndex().then((resp)=> {
@@ -80,6 +83,7 @@ export default class IndexSelectionFormGroup extends Component {
 
     // The onChange function is a callback from parent component
     this.selectIndex               = this.selectIndex.bind(this, onChange);
+
   }
 
   handleIndexChange = e => {
@@ -103,12 +107,22 @@ export default class IndexSelectionFormGroup extends Component {
         if (!res.status) {
 
           // error creating index
-          // TODO
+          this.addToast({
+            title: "Error to create new index",
+            type: "danger",
+            msg: (<EuiCodeBlock language="json">{JSON.stringify(res.response.data)}</EuiCodeBlock>)
+          });
 
-          return
+          return;
         }
 
+        this.addToast({
+          title: "New index created",
+          type: "success"
+        });
+
         this.refreshIndices(this.state.newIndexValue);
+
         this.setState({
           newIndexValue: '',
         });
@@ -135,11 +149,17 @@ export default class IndexSelectionFormGroup extends Component {
       .then((res) => {
 
         if (!res.status) {
+
           // error loading indices
-          //TODO
+          this.addToast({
+            title: "Error to load indices",
+            type: "danger",
+            msg: (<EuiCodeBlock language="json">{JSON.stringify(res.response.data)}</EuiCodeBlock>)
+          });
 
           return;
         }
+
 
         var options = res.data;
 
@@ -156,6 +176,7 @@ export default class IndexSelectionFormGroup extends Component {
       })
       .catch((err) => {console.log(err)})
   }
+
 
   render() {
 
@@ -198,6 +219,7 @@ export default class IndexSelectionFormGroup extends Component {
             </EuiFlexGroup>
 
           </EuiAccordion>
+
         </Fragment>
       );
 
