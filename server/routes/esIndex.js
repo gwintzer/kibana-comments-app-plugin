@@ -1,3 +1,4 @@
+import { wrapError } from './wrapError'
 
 export default function (server, dataCluster) {
 
@@ -18,23 +19,20 @@ export default function (server, dataCluster) {
   server.route({
     path: '/api/kibana-comments-plugin/index',
     method: 'GET',
-    handler(req, reply) {
+    handler: async(req, h) => {
 
-      dataCluster.callWithRequest(req, 'cat.indices', {
-        format: "json"
-      })
-      .then((response) => {
+      try { 
 
-        reply(response
+        var response = await dataCluster.callWithRequest(req, 'cat.indices', {format: "json"})
+
+        return (response
               .filter((indexData) => (indexData.status === 'open'
                                    && indexData.index.startsWith(baseIndex))) // filter
               .sort((a, b) => (a.index > b.index)));
-
-      })
-      .catch((e) => {
-        reply([]);
-      })
-
+      }
+      catch (error) {
+        return wrapError(error);
+      }
     }
   });
 
@@ -42,29 +40,24 @@ export default function (server, dataCluster) {
   server.route({
     path: '/api/kibana-comments-plugin/index/{name?}',
     method: 'PUT',
-    handler(req, reply) {
+    handler: async(req, h) => {
+      try {
+        let indexName = baseIndex;
 
-      let indexName = baseIndex;
+        if (req.params.name)
+          indexName += '-' + encodeURIComponent(req.params.name);
 
-      if (req.params.name)
-        indexName += '-' + encodeURIComponent(req.params.name);
+        var response = await dataCluster.callWithRequest(req, 'indices.create', {
+          index: indexName,
+          body: defaultNewIndexSettings,
+          ignore: [400]
+        })
 
-      //createIndex(indexName, req, reply)
-      dataCluster.callWithRequest(req, 'indices.create', {
-        index: indexName,
-        body: defaultNewIndexSettings,
-        ignore: [400]
-      })
-      .then((response) => {
-
-        reply({"acknowledged": true});
-
-      }).catch((e) => {
-
-        console.error(e);
-        reply({"error": e})
-      });
-
+        return {"acknowledged": true};
+      } 
+      catch (error) {
+        return wrapError(error);
+      }
     }
   });
 
