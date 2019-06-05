@@ -6,14 +6,6 @@ export default function (server, dataCluster) {
   //const mandatoryFields = ["date", "comment"];
 
   const baseIndex = "comments";
-  const defaultType = "document";
-
-  const defaultNewIndexSettings = {
-    "settings" : {
-        "number_of_shards" : 1,
-        "number_of_replicas" : 1
-    }
-  }
 
   // Route GET : list indices
   server.route({
@@ -41,7 +33,18 @@ export default function (server, dataCluster) {
     path: '/api/kibana-comments-plugin/index/{name?}',
     method: 'PUT',
     handler: async(req, h) => {
+      
       try {
+        const config = req.server.config();
+        const pluginConfig = config.get('kibana-comments-app-plugin');
+
+        const newIndexSettings = {
+          "settings" : {
+              "number_of_shards" : pluginConfig.newIndexNumberOfShards || 1,
+              "number_of_replicas" : pluginConfig.newIndexNumberOfReplicas || 1
+          }
+        }
+
         let indexName = baseIndex;
 
         if (req.params.name)
@@ -49,7 +52,7 @@ export default function (server, dataCluster) {
 
         var response = await dataCluster.callWithRequest(req, 'indices.create', {
           index: indexName,
-          body: defaultNewIndexSettings,
+          body: newIndexSettings,
           ignore: [400]
         })
 

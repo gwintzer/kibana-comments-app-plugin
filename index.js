@@ -16,7 +16,8 @@ export default function (kibana) {
       app: {
         title: 'Comments',
         description: 'A plugin to add comments to your Kibana dashboards',
-        main: 'plugins/kibana-comments-app-plugin/app'
+        main: 'plugins/kibana-comments-app-plugin/app',
+        euiIconType: 'tag'
       }
 
     },
@@ -25,16 +26,18 @@ export default function (kibana) {
 
       return Joi.object({
         enabled: Joi.boolean().default(true),
+        newIndexNumberOfShards: Joi.number().integer().default(1),
+        newIndexNumberOfReplicas: Joi.number().integer().default(1)
       }).default();
     },
 
     init(server, options) {
 
       // Add server routes and initialize the plugin here
-      const dataCluster = server.plugins.elasticsearch.getCluster('data');
+      const dataCluster = server.plugins.elasticsearch.getCluster('data')
 
-      serverRouteEsComment(server, dataCluster);
-      serverRouteEsIndex(server, dataCluster);
+      serverRouteEsComment(server, dataCluster)
+      serverRouteEsIndex(server, dataCluster)
     }
 
 
