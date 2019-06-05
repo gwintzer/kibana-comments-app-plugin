@@ -22,8 +22,8 @@
 Set the number of shards and replicas for new comment's indices
 Edit your kibana.yml
 ```
-kibana-comments-app-plugin.newIndexNumberOfShards: 1
-kibana-comments-app-plugin.newIndexNumberOfReplicas: 1
+kibana-comments-app-plugin.newIndexNumberOfShards: 1   # default to 1
+kibana-comments-app-plugin.newIndexNumberOfReplicas: 1 # default to 1
 ```
 
 
