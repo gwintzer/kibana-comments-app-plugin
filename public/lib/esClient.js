@@ -67,7 +67,7 @@ export async function findComments({index, pageIndex, pageSize, sortField, sortD
       status: true,
       data: {
         pageOfItems: listComments.data.items,
-        totalItemCount: listComments.data.total,
+        totalItemCount: listComments.data.total.value,
       }
     }
   }

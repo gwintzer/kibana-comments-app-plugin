@@ -1,15 +1,15 @@
 {
   "name": "kibana-comments-app-plugin",
-  "version": "6.6+-1",
+  "version": "7.4.0",
   "description": "An application plugin to add and manage comments to your Kibana dashboards",
   "main": "index.js",
   "kibana": {
-    "version": "6.7.1",
+    "version": "7.4.0",
     "templateVersion": "7.2.0"
   },
   "scripts": {
-    "preinstall": "node ../../kibana/preinstall_check",
-    "kbn": "node ../../kibana/scripts/kbn",
+    "preinstall": "node ../../preinstall_check",
+    "kbn": "node ../../scripts/kbn",
     "lint": "eslint **/*.js",
     "start": "plugin-helpers start",
     "test:server": "plugin-helpers test:server",
@@ -17,21 +17,21 @@
     "build": "plugin-helpers build"
   },
   "devDependencies": {
-    "@elastic/eslint-config-kibana": "link:../../kibana/packages/eslint-config-kibana",
+    "@elastic/eslint-config-kibana": "link:../../packages/eslint-config-kibana",
     "@elastic/eslint-import-resolver-kibana": "^0.9.0",
-    "@kbn/plugin-helpers": "link:../../kibana/packages/kbn-plugin-helpers",
-    "babel-eslint": "^8.0.2",
-    "eslint": "^4.11.0",
-    "eslint-plugin-babel": "^4.1.1",
-    "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-jest": "^21.3.2",
-    "eslint-plugin-mocha": "^4.9.0",
+    "@kbn/plugin-helpers": "link:../../packages/kbn-plugin-helpers",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.4.1",
+    "eslint-plugin-mocha": "^5.3.0",
     "eslint-plugin-prefer-object-spread": "^1.2.1",
-    "eslint-plugin-react": "^7.0.1",
+    "eslint-plugin-react": "^7.12.4",
     "expect.js": "^0.3.1"
   },
   "dependencies": {
-    "@elastic/eui": "3.6.1",
+    "@elastic/eui": "14.4.0",
     "angular-datatables": "^0.5.7",
     "axios": "^0.18.0",
     "boom": "^5.2.0",
