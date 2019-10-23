@@ -1,6 +1,6 @@
 import { boomify } from 'boom';
 
-export function wrapError(error) {
-  return boomify(error);
+export function wrapError(error, options) {
+  return boomify(error, options);
 }
 

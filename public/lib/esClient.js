@@ -1,6 +1,3 @@
-
-
-import moment from 'moment';
 import axios from 'axios';
 
 const apiPrefix = "../api/kibana-comments-plugin";
@@ -8,7 +5,6 @@ const apiPrefix = "../api/kibana-comments-plugin";
 axios.defaults.headers.post['kbn-xsrf']   = "reporting";
 axios.defaults.headers.put['kbn-xsrf']    = "reporting";
 axios.defaults.headers.delete['kbn-xsrf'] = "reporting";
-
 
 export async function loadIndices() {
 

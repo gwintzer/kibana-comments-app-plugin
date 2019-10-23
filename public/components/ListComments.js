@@ -206,15 +206,13 @@ export default class ListComments extends Component {
 
     findComments({pageIndex, pageSize, sortField, sortDirection})
       .then((res) => {
-
         this.setState({
-          pageOfItems: res.data.pageOfItems || null,
-          totalItemCount: res.data.totalItemCount || 0,
+          pageOfItems: (res.data && res.data.pageOfItems) || null,
+          totalItemCount: (res.data && res.data.totalItemCount) || 0,
         });
 
       })
       .catch((err) => {
-
         console.log(err)
         this.setState({
           pageOfItems: null,
