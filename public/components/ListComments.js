@@ -35,7 +35,7 @@ export default class ListComments extends Component {
 
     const defaultState = this.state = {
       pageOfItems: null,
-      totalItemCount: null,
+      totalItemCount: 0,
       pageIndex: 0,
       pageSize: 20,
       sortField: 'date',
@@ -136,7 +136,7 @@ export default class ListComments extends Component {
     }
 
    const toast = {
-     id: this.toastId++,
+     id: (this.toastId++).toString(),
      title: title,
      color: type || "primary",
      iconType,
@@ -206,19 +206,17 @@ export default class ListComments extends Component {
 
     findComments({pageIndex, pageSize, sortField, sortDirection})
       .then((res) => {
-
         this.setState({
-          pageOfItems: res.data.pageOfItems || null,
-          totalItemCount: res.data.totalItemCount || null,
+          pageOfItems: (res.data && res.data.pageOfItems) || null,
+          totalItemCount: (res.data && res.data.totalItemCount) || 0,
         });
 
       })
       .catch((err) => {
-
         console.log(err)
         this.setState({
           pageOfItems: null,
-          totalItemCount: null,
+          totalItemCount: 0,
         });
 
       });

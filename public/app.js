@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { uiModules } from  'ui/modules'
-import uiRoutes from 'ui/routes'
+// import uiRoutes from 'ui/routes'
 import chrome from 'ui/chrome'
 
 import moment from 'moment-timezone'
@@ -16,15 +16,16 @@ import Main from './components/Main.js';
 
 //import template from './templates/index.html'
 
-const apiPrefix = "../api/kibana-comments-plugin";
+// const apiPrefix = "../api/kibana-comments-plugin";
 
-var app = uiModules.get('app/kibana-comments-plugin', []);
+// var app = uiModules.get('app/kibana-comments-plugin', []);
 
 // uiRoutes.enable();
 // uiRoutes
 // .when('/', {
 //   template
 // });
+
 
 
 function RootController($scope, $element, config) {

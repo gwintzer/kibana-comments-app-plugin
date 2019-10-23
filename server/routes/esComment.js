@@ -7,7 +7,7 @@ export default function (server, dataCluster) {
   //const mandatoryFields = ["date", "comment"];
 
   const indexPattern = "comments,comments-*";
-  const type = "document";
+  // const type = "document";
 
   // Route GET : list comments
   server.route({
@@ -35,7 +35,6 @@ export default function (server, dataCluster) {
         
         var response = await dataCluster.callWithRequest(req, 'search', {
           index,
-          type,
           body: {
             "query": {
               "match_all": {}
@@ -64,11 +63,10 @@ export default function (server, dataCluster) {
         };
       }
       catch (error) {
-        return wrapError(error);
+        return wrapError(error, {statusCode: error.status});
       }
     }
   });
-
 
   // Route PUT : create a comment
   server.route({
@@ -85,7 +83,6 @@ export default function (server, dataCluster) {
         
         var response = await dataCluster.callWithRequest(req, 'index', {
           index,
-          type,
           refresh: true,
           body: {
             "created_at": new Date().toISOString(),
@@ -110,7 +107,7 @@ export default function (server, dataCluster) {
       try {
         var response = await dataCluster.callWithRequest(req, 'delete', {
           index: req.params.index,
-          type: type,
+          // type: type,
           refresh: true,
           id: req.params.id
         });

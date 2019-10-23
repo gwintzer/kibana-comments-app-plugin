@@ -1,4 +1,3 @@
-import { resolve } from 'path';
 import { initServer } from './server';
 import serverRouteEsComment from './server/routes/esComment';
 import serverRouteEsIndex from './server/routes/esIndex';
