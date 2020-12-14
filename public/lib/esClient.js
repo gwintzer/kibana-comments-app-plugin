@@ -14,7 +14,7 @@ export async function loadIndices() {
 
     return {
       status: true,
-      data: listIndices.data.map((i) => ({ value: i.index, text: i.index }))
+      data: listIndices.data.data.map((i) => ({ value: i.index, text: i.index }))
     }
   }
   catch(e) {

@@ -1,0 +1,10 @@
+{
+    "prefix": "kibanaCommentsApp",
+    "paths": {
+      "kibanaCommentsApp": "."
+    },
+    "translations": [
+      "translations/ja-JP.json"
+    ]
+  }
+  
