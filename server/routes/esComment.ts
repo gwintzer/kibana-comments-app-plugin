@@ -2,11 +2,8 @@ import { wrapError } from './wrapError'
 import Boom from 'boom'
 import { schema } from '@kbn/config-schema';
 import { IRouter } from '../../../../src/core/server';
-import { Console } from 'console';
 
 export function defineRoutesComment(router: IRouter) {
- 
-
 
   // TODO : check given fields
   //const mandatoryFields = ["date", "comment"];
@@ -67,7 +64,7 @@ export function defineRoutesComment(router: IRouter) {
         return response.ok({
           body: {
           "total": data.hits.total,
-          "items": data.hits.hits.map((hit) => ({
+          "items": data.hits.hits.map((hit: { _id: any; _index: any; _source: any; }) => ({
             "id": hit._id,
             "index": hit._index,
             ...hit._source
@@ -79,7 +76,6 @@ export function defineRoutesComment(router: IRouter) {
           body: {            
             message: error,
           }
-          //wrapError(error, {statusCode: error.status});
       });
     
     }
@@ -97,12 +93,11 @@ export function defineRoutesComment(router: IRouter) {
     },
     async (context, request, response) => {
       try {
-        console.log('******************** request ',request)
+        //console.log('******************** request ',request)
         var payload = request.body;
-        console.log('******************** payload ',payload)
+        //console.log('******************** payload ',payload)
         if (!payload.index)
           throw Boom.notAcceptable('index is required'); 
-        console.log('******************** index ',payload.index)
         var index = payload.index;
         
         const data = await context.core.elasticsearch.legacy.client.callAsCurrentUser( 'index', {
@@ -128,7 +123,6 @@ export function defineRoutesComment(router: IRouter) {
             message: "error",
           }
         });
-        //return wrapError(error);
       }
     });
  
@@ -144,8 +138,7 @@ export function defineRoutesComment(router: IRouter) {
     },
     async (context, request, response) => {
       try {
-        console.log('************** request',request);
-        console.log('************** request',request.params);
+        //console.log('************** request',request.params);
         var data = await context.core.elasticsearch.legacy.client.callAsCurrentUser('delete', {
           index: request.params.index,
           // type: type,
@@ -167,7 +160,6 @@ export function defineRoutesComment(router: IRouter) {
             message: "error",
           }
         });
-        //return wrapError(error);      
       }
     });
   
