@@ -108,10 +108,10 @@ export function defineRoutesComment(router: IRouter) {
             ...payload.comment
           }
         });
-        
+        //console.log('**************** data',data);
         return response.ok({
           body: {
-            data,
+            data: data,
             time: new Date().toISOString(),
           },
         });
