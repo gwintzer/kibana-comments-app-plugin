@@ -122,6 +122,7 @@ export function defineRoutesIndex(router: IRouter) {
           });
         } 
       catch (error) {
+        //console.log(error)
        if (error instanceof errors.ResponseError ){
           return response.ok({
             body: {

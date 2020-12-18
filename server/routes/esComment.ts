@@ -120,7 +120,7 @@ export function defineRoutesComment(router: IRouter) {
       catch (error) {
         return response.ok({
           body: {            
-            message: "error",
+            message: error,
           }
         });
       }
@@ -157,7 +157,7 @@ export function defineRoutesComment(router: IRouter) {
       catch (error) {
         return response.ok({
           body: {            
-            message: "error",
+            message: error,
           }
         });
       }
