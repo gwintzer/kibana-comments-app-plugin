@@ -20,10 +20,11 @@
 
 import { schema, TypeOf } from '@kbn/config-schema';
 
-export const config = {schema: schema.object({
+export const configSchema = {schema: schema.object({
+  enabled: schema.boolean({ defaultValue: true }),
   newIndexNumberOfShards: schema.number({defaultValue: 1}),
   newIndexNumberOfReplicas:  schema.number({defaultValue: 1})
 
 })};
 
-export type KibanaCommentAppPluginConfig = TypeOf<typeof config.schema>;
+export type ConfigSchema = TypeOf<typeof configSchema.schema>;
