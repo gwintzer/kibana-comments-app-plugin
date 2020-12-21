@@ -6,12 +6,11 @@
   },
   "include": [
     "index.ts",
-    "config.ts",
     "common/**/*.ts",
     "public/**/*.ts",
     "public/**/*.tsx",
     "server/**/*.ts",
-    "../../typings/**/*", 
+    "../../typings/**/*"
   ],
   "exclude": []
 }
