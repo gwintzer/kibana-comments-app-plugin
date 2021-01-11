@@ -14,7 +14,7 @@ export async function loadIndices() {
 
     return {
       status: true,
-      data: listIndices.data.map((i) => ({ value: i.index, text: i.index }))
+      data: listIndices.data.data.map((i) => ({ value: i.index, text: i.index }))
     }
   }
   catch(e) {
@@ -120,7 +120,7 @@ export async function createIndex(indexName) {
       });
 
       // ok if acknowledged or if the index already exists, else throw error...
-      if (!res.data.acknowledged && res.data.error.type !== "index_already_exists_exception") {
+      if (!res.data.data.acknowledged && res.data.data.error.type !== "resource_already_exists_exception") {
 
         throw {
           text: 'An error occured when processing your request. Reason: ' + res.data.error.reason,
@@ -164,7 +164,7 @@ export async function submitComment(indexName, date, comment) {
     );
 
     // ok if acknowledged or if the index already exists, else throw error...
-    if (res.data.result !== "created") {
+    if (res.data.data.result !== "created") {
 
       throw {
         text: 'An error occured when saving your comment. Reason: ' + res.data.error,
